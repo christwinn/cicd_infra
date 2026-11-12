@@ -3,12 +3,15 @@
   hosts: localhost
   tasks:        
     - name: add hashicorp repo
-      ansible.builtin.yum_repository:
-        name: Terraform
-        description: Hashicop repo
-        baseurl: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
-      # dnf config-mananager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
-
+      ansible.builtin.shell:
+        cmd: dnf config-mananager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+        
+      #ansible.builtin.yum_repository:
+      #  name: Terraform
+      #  description: Hashicop repo
+      #  so yum_repository just makes a file with this as the source, dnf config-manager reads the repo file and adds the urls required
+      #  baseurl: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+      
     - name: install Terraform
       ansible.builtin.dnf:
         name: terraform
