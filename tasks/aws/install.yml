@@ -7,9 +7,11 @@
 # install aws
 - name: extract and install aws
   block: 
-    - ansible.builtin.shell:
+    - name: unzipping the awscli
+      ansible.builtin.shell:
         cmd: unzip /tmp/awscli.zip -d /tmp
       
-    - ansible.builtin.shell:
+    - name: running the awscli installation
+      ansible.builtin.shell:
         cmd: /tmp/aws/install
   when: '"Good signature" in signature.stderr'
