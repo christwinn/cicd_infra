@@ -2,12 +2,12 @@
     
 - name: Include Terraform Tasks
   ansible.builtin.import_tasks:
-    file: tasks/install/terraform.yml
+    file: terraform.yml
         
 - name: Include gh-cli Tasks
   ansible.builtin.import_tasks:
-    file: tasks/install/gh-cli.yml
+    file: gh-cli.yml
 
 - name: Include awscli Tasks
   ansible.builtin.import_tasks:
-    file: tasks/install/awscli.yml
+    file: awscli.yml
