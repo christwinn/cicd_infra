@@ -23,6 +23,15 @@
     url: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
     dest: /tmp/aws-install.html
 
+- name: extracting the public key from their webpage :-( ugly
+  ansible.builtin.shell:
+    cmd: grep '\-----BEGIN' -m 1 -A 30 /tmp/aws-install.html | cut -d '-' -f 200 | grep -v '^[[:space:]].*$' | grep '^$'
+  register: publickey
+
+- name: debug the key extraction
+  debug: 
+    var: publickey
+
 - name: awscli download
   block: 
     - name: download the awscli
