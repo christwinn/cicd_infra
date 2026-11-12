@@ -72,7 +72,7 @@
 
 - name: extract and install aws
   ansible.builtin.shell:
-    cmd: unzip /tmp/awscli.zip -d /tmp/aws; echo "OK"
+    cmd: unzip /tmp/awscli.zip -d /tmp; /tmp/aws/install
   when: '"Good signature" in signature.stderr'
 
     
