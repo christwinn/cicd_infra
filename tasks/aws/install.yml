@@ -1,0 +1,15 @@
+# check the download signature
+- name: check the signature
+  ansible.builtin.shell:
+    cmd: gpg --verify /tmp/awscli.zip.sig /tmp/awscli.zip
+  register: signature
+
+# install aws
+- name: extract and install aws
+  block: 
+    - ansible.builtin.shell:
+        cmd: unzip /tmp/awscli.zip -d /tmp
+      
+    - ansible.builtin.shell:
+        cmd: /tmp/aws/install
+  when: '"Good signature" in signature.stderr'
