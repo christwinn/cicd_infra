@@ -4,18 +4,18 @@
   tasks:        
     - name: Include Terraform Tasks
       ansible.builtin.import_tasks:
-        file: tasks/terraform.yml
+        file: tasks/install/terraform.yml
         
 - name: Configure machine with gh-cli
   hosts: localhost
   tasks:        
     - name: Include gh-cli Tasks
       ansible.builtin.import_tasks:
-        file: tasks/gh-cli.yml
+        file: tasks/install/gh-cli.yml
 
 - name: Configure machine with awscli
   hosts: localhost
   tasks:        
     - name: Include awscli Tasks
       ansible.builtin.import_tasks:
-        file: tasks/awscli.yml
+        file: tasks/install/awscli.yml
