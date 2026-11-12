@@ -1,3 +1,4 @@
+# install packages
 - name: install unzip
   ansible.builtin.dnf:
     name: unzip
@@ -8,6 +9,7 @@
     name: gpg
     state: latest
 
+# register the aws public key
 - name: check to see of key file already exists
   ansible.builtin.stat:
     path: /tmp/aws.key
@@ -41,7 +43,9 @@
       debug: 
         msg: there was an issue with the public key retrieval
 
+  when: keyfile.stat.exists == false
 
+# install aws
 - name: check to see of zip already exists
   ansible.builtin.stat:
     path: /tmp/awscli.zip
@@ -71,8 +75,9 @@
   register: signature
 
 - name: extract and install aws
-  ansible.builtin.shell:
-    cmd: unzip /tmp/awscli.zip -d /tmp; /tmp/aws/install
+  block: 
+    - ansible.builtin.shell:
+        cmd: unzip /tmp/awscli.zip -d /tmp
+    - ansible.builtin.shell:
+        cmd: /tmp/aws/install
   when: '"Good signature" in signature.stderr'
-
-    
