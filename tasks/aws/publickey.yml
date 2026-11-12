@@ -1,0 +1,35 @@
+# register the aws public key
+- name: check to see of key file already exists
+  ansible.builtin.stat:
+    path: /tmp/aws.key
+  register: keyfile
+
+- name: download and install the key
+  block: 
+   - name: download the public key!
+     ansible.builtin.get_url:
+       url: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+     dest: /tmp/aws-install.html
+
+  - name: extracting the public key from their webpage :-( ugly
+     ansible.builtin.shell:
+        # limit to 1 there appears to be the same key 4 times, cutting on - and showing field 200 our lines do not have - so show ! then remove lines starting with a blank and then any all blank
+        cmd: grep '\-----BEGIN' -m 1 -A 30 /tmp/aws-install.html | cut -d '-' -f 200 | grep -v '^[[:space:]].*$' | grep -v '^$'
+     register: publickey
+
+   - name: write the key to /tmp
+     # uses the publickey
+     ansible.builtin.template:
+       src: awskey.pub
+       dest: /tmp/aws.key
+
+   - name: install the key to gpg
+     ansible.builtin.shell:
+       cmd: gpg --import /tmp/aws.key
+
+   rescue: 
+   - name: oh dear
+     debug: 
+       msg: there was an issue with the public key retrieval
+
+  when: keyfile.stat.exists == false
