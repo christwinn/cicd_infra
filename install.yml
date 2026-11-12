@@ -16,12 +16,6 @@
 - name: Configure machine with awscli
   hosts: localhost
   tasks:        
-    - name: check awscli installed
-      ansible.builtin.stat: 
-        path: /usr/local/bin/aws
-      register: aws
-      
     - name: Include awscli Tasks
       ansible.builtin.import_tasks:
         file: tasks/awscli.yml
-      when: aws.stat.exists == false
