@@ -1,0 +1,15 @@
+---
+- name: Configure machine with Terraform
+  hosts: localhost
+  tasks:
+    - name: add hashicorp repo
+      ansible.builtin.yum_repository:
+        name: Terraform
+        description: Hashicop repo
+        baseurl: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+      # dnf config-mananager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+
+    - name: install Terraform
+      ansible.builtin.dnf:
+        name: terraform
+        state: latest
