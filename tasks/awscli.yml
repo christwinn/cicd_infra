@@ -32,7 +32,7 @@
   when: zipfile.stat.exists == false or sigfile.stat.exists == false
 
 - name: check the signature
-  ansible.builtin.cmd:
+  ansible.builtin.shell:
     cmd: gpg --verify /tmp/awscli.zip.sig /tmp/awscli.zip
   register: signature
 
