@@ -1,0 +1,24 @@
+# download aws
+- name: check to see of zip already exists
+  ansible.builtin.stat:
+    path: /tmp/awscli.zip
+  register: zipfile
+
+- name: check to see of zip already exists
+  ansible.builtin.stat:
+    path: /tmp/awscli.zip.sig
+  register: sigfile
+  
+- name: awscli download
+  block: 
+  - name: download the awscli
+    ansible.builtin.get_url:
+      url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+      dest: /tmp/awscli.zip
+    
+  - name: download the sig for aswscli
+    ansible.builtin.get_url:
+      url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip.sig
+      dest: /tmp/awscli.zip.sig
+      
+  when: zipfile.stat.exists == false or sigfile.stat.exists == false
