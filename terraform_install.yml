@@ -21,7 +21,7 @@
         name: terraform
         state: latest
 
-    - name: install Terraform
+    - name: install gh cli
       ansible.builtin.dnf:
         name: gh
         state: latest
