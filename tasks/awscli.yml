@@ -17,7 +17,12 @@
   ansible.builtin.stat:
     path: /tmp/awscli.zip.sig
   register: sigfile
-  
+
+- name: download the public key!
+  ansible.builtin.get_url:
+    url: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+    dest: /tmp/aws-install.html
+
 - name: awscli download
   block: 
     - name: download the awscli
