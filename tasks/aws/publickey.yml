@@ -27,9 +27,9 @@
        ansible.builtin.shell:
          cmd: gpg --import /tmp/aws.key
 
-   rescue: 
-     - name: oh dear
-       debug: 
-         msg: there was an issue with the public key retrieval
+  rescue: 
+    - name: oh dear
+      debug: 
+        msg: there was an issue with the public key retrieval
 
   when: keyfile.stat.exists == false
