@@ -11,14 +11,14 @@
   
 - name: awscli download
   block: 
-  - name: download the awscli
-    ansible.builtin.get_url:
-      url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
-      dest: /tmp/awscli.zip
+    - name: download the awscli
+      ansible.builtin.get_url:
+        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+        dest: /tmp/awscli.zip
     
-  - name: download the sig for aswscli
-    ansible.builtin.get_url:
-      url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip.sig
-      dest: /tmp/awscli.zip.sig
+    - name: download the sig for aswscli
+      ansible.builtin.get_url:
+        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip.sig
+        dest: /tmp/awscli.zip.sig
       
   when: zipfile.stat.exists == false or sigfile.stat.exists == false
