@@ -1,2 +1,43 @@
-- ansible.builtin.debug:
-    msg: aws task
+- name: install unzip
+  ansible.builtin.dnf:
+    name: unzip
+    state: latest
+
+- name: install gpg so we can verify the signature
+  ansible.builtin.dnf:
+    name: gpg
+    state: latest
+
+- name: check to see of zip already exists
+  ansible.builtin.stat:
+    path: /tmp/awscli.zip
+  register: zipfile
+
+- name: check to see of zip already exists
+  ansible.builtin.stat:
+    path: /tmp/awscli.zip.sig
+  register: sigfile
+  
+- name: awscli download
+  block: 
+    - name: download the awscli
+      ansible.builtin.get_url:
+        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+        dest: /tmp/awscli.zip
+    
+    - name: download the sig for aswscli
+      ansible.builtin.get_url:
+        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip.sig
+        dest: /tmp/awscli.zip.sig
+  when: zipfile.stat.exists == false or sigfile.stat.exists == false
+
+- name: check the signature
+  ansible.builtin.cmd:
+    cmd: gpg --verify /tmp/awscli.zip.sig /tmp/awscli.zip
+  register: signature
+
+- name: debug the sig
+  ansible.builtin.debug: 
+    var: signature
+
+    
