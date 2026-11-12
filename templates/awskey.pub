@@ -1,0 +1,6 @@
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+{% for l in publickey.stdout_lines %}
+{{ l }}
+{% endfor %}
+-----END PGP PUBLIC KEY BLOCK-----
