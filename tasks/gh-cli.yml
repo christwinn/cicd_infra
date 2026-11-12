@@ -1,0 +1,9 @@
+- name: install Terraform
+  ansible.builtin.dnf:
+    name: terraform
+    state: latest
+
+- name: install gh cli
+  ansible.builtin.dnf:
+    name: gh
+    state: latest
