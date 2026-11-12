@@ -2,4 +2,4 @@
 - name: installs the controller role
   hosts: localhost
   roles: 
-    - role: roles/controller_installcd 
+    - role: roles/controller_install
