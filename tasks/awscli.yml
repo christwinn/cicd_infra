@@ -25,13 +25,19 @@
 
 - name: extracting the public key from their webpage :-( ugly
   ansible.builtin.shell:
-    cmd: grep '\-----BEGIN' -m 1 -A 30 /tmp/aws-install.html | cut -d '-' -f 200 | grep -v '^[[:space:]].*$' | grep '^$'
+    # limit to 1 there appears to be the same key 4 times, cutting on - and showing field 200 our lines do not have - so show ! then remove lines starting with a blank and then any all blank
+    cmd: grep '\-----BEGIN' -m 1 -A 30 /tmp/aws-install.html | cut -d '-' -f 200 | grep -v '^[[:space:]].*$' | grep -v '^$'
   register: publickey
 
 - name: debug the key extraction
-  debug: 
-    var: publickey
+  ansible.builtin.copy:
+    dest: /tmp/aws.key
+    content: |
+      "-----BEGIN PGP PUBLIC KEY BLOCK-----
 
+      {{ publickey.stdout_lines }}
+      -----END PGP PUBLIC KEY BLOCK-----"
+    
 - name: awscli download
   block: 
     - name: download the awscli
