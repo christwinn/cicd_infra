@@ -1,83 +1,97 @@
-# install packages
-- name: install unzip
-  ansible.builtin.dnf:
-    name: unzip
-    state: latest
+---
+# we only run when /usr/local/bin/aws does not exist
+- name: check awscli installed
+  ansible.builtin.stat: 
+    path: /usr/local/bin/aws
+  register: aws
 
-- name: install gpg so we can verify the signature
-  ansible.builtin.dnf:
-    name: gpg
-    state: latest
-
-# register the aws public key
-- name: check to see of key file already exists
-  ansible.builtin.stat:
-    path: /tmp/aws.key
-  register: keyfile
-
-- name: download and install the key
+- name: processing aws installation 
   block: 
-    - name: download the public key!
-      ansible.builtin.get_url:
-        url: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
-        dest: /tmp/aws-install.html
+    # install packages
+    - name: install unzip
+      ansible.builtin.dnf:
+        name: unzip
+      state: latest
 
-    - name: extracting the public key from their webpage :-( ugly
-      ansible.builtin.shell:
-      # limit to 1 there appears to be the same key 4 times, cutting on - and showing field 200 our lines do not have - so show ! then remove lines starting with a blank and then any all blank
-        cmd: grep '\-----BEGIN' -m 1 -A 30 /tmp/aws-install.html | cut -d '-' -f 200 | grep -v '^[[:space:]].*$' | grep -v '^$'
-      register: publickey
+    - name: install gpg so we can verify the signature
+      ansible.builtin.dnf:
+        name: gpg
+        state: latest
 
-    - name: write the key to /tmp
-      # uses the publickey
-      ansible.builtin.template:
-        src: awskey.pub
-        dest: /tmp/aws.key
+    # register the aws public key
+    - name: check to see of key file already exists
+      ansible.builtin.stat:
+        path: /tmp/aws.key
+      register: keyfile
 
-    - name: install the key to gpg
-      ansible.builtin.shell:
-        cmd: gpg --import /tmp/aws.key
+    - name: download and install the key
+      block: 
+        - name: download the public key!
+          ansible.builtin.get_url:
+            url: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+            dest: /tmp/aws-install.html
 
-  rescue: 
-    - name: oh dear
-      debug: 
-        msg: there was an issue with the public key retrieval
+        - name: extracting the public key from their webpage :-( ugly
+          ansible.builtin.shell:
+          # limit to 1 there appears to be the same key 4 times, cutting on - and showing field 200 our lines do not have - so show ! then remove lines starting with a blank and then any all blank
+            cmd: grep '\-----BEGIN' -m 1 -A 30 /tmp/aws-install.html | cut -d '-' -f 200 | grep -v '^[[:space:]].*$' | grep -v '^$'
+          register: publickey
 
-  when: keyfile.stat.exists == false
+        - name: write the key to /tmp
+          # uses the publickey
+          ansible.builtin.template:
+            src: awskey.pub
+            dest: /tmp/aws.key
 
-# install aws
-- name: check to see of zip already exists
-  ansible.builtin.stat:
-    path: /tmp/awscli.zip
-  register: zipfile
+        - name: install the key to gpg
+          ansible.builtin.shell:
+            cmd: gpg --import /tmp/aws.key
 
-- name: check to see of zip already exists
-  ansible.builtin.stat:
-    path: /tmp/awscli.zip.sig
-  register: sigfile
+      rescue: 
+        - name: oh dear
+          debug: 
+            msg: there was an issue with the public key retrieval
+
+      when: keyfile.stat.exists == false
+
+    # extract aws
+    - name: check to see of zip already exists
+      ansible.builtin.stat:
+        path: /tmp/awscli.zip
+      register: zipfile
+
+    - name: check to see of zip already exists
+      ansible.builtin.stat:
+        path: /tmp/awscli.zip.sig
+      register: sigfile
   
-- name: awscli download
-  block: 
-    - name: download the awscli
-      ansible.builtin.get_url:
-        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
-        dest: /tmp/awscli.zip
+    - name: awscli download
+      block: 
+        - name: download the awscli
+          ansible.builtin.get_url:
+            url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+            dest: /tmp/awscli.zip
     
-    - name: download the sig for aswscli
-      ansible.builtin.get_url:
-        url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip.sig
-        dest: /tmp/awscli.zip.sig
-  when: zipfile.stat.exists == false or sigfile.stat.exists == false
+        - name: download the sig for aswscli
+          ansible.builtin.get_url:
+            url: https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip.sig
+            dest: /tmp/awscli.zip.sig
+      when: zipfile.stat.exists == false or sigfile.stat.exists == false
 
-- name: check the signature
-  ansible.builtin.shell:
-    cmd: gpg --verify /tmp/awscli.zip.sig /tmp/awscli.zip
-  register: signature
+    # check the download signature
+    - name: check the signature
+      ansible.builtin.shell:
+        cmd: gpg --verify /tmp/awscli.zip.sig /tmp/awscli.zip
+      register: signature
 
-- name: extract and install aws
-  block: 
-    - ansible.builtin.shell:
-        cmd: unzip /tmp/awscli.zip -d /tmp
-    - ansible.builtin.shell:
-        cmd: /tmp/aws/install
-  when: '"Good signature" in signature.stderr'
+    # install aws
+    - name: extract and install aws
+      block: 
+        - ansible.builtin.shell:
+            cmd: unzip /tmp/awscli.zip -d /tmp
+        - ansible.builtin.shell:
+            cmd: /tmp/aws/install
+      when: '"Good signature" in signature.stderr'
+      
+  when: aws.stat.exists == false
+    
