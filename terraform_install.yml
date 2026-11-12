@@ -1,7 +1,7 @@
 ---
 - name: Configure machine with Terraform
   hosts: localhost
-  tasks:
+  tasks:        
     - name: add hashicorp repo
       ansible.builtin.yum_repository:
         name: Terraform
