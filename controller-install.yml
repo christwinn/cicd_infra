@@ -1,0 +1,5 @@
+---
+- name: installs the controller role
+  hosts: localhost
+  roles: 
+    - role: roles/controller_install

@@ -9,9 +9,9 @@
     cmd: dnf config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
   when: hashicorp.stat.exists == false       
   
-# why not ansible.builtin.yum_repository:
-# yum_repository just makes a literal file with the .repo file as the source, 
-# dnf config-manager reads the repo file and adds the urls required
+  # why not use ansible.builtin.yum_repository ? 
+  # yum_repository just makes a literal file with the .repo file as the source, 
+  # dnf config-manager reads the repo file and adds the urls as required
 
 - name: install Terraform
   ansible.builtin.dnf:
