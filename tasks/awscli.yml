@@ -30,13 +30,9 @@
   register: publickey
 
 - name: debug the key extraction
-  ansible.builtin.copy:
+  ansible.builtin.template:
+    src: awskey.pub
     dest: /tmp/aws.key
-    content: |
-      "-----BEGIN PGP PUBLIC KEY BLOCK-----
-
-      {{ publickey.stdout_lines }}
-      -----END PGP PUBLIC KEY BLOCK-----"
     
 - name: awscli download
   block: 
