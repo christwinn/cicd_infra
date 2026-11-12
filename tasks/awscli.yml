@@ -19,7 +19,7 @@
       ansible.builtin.import_tasks:
         file: aws/download.yml
         
-   - name: finally check the sig and install if zip is ok
+    - name: finally check the sig and install if zip is ok
       ansible.builtin.import_tasks:
         file: aws/install.yml
       
