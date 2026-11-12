@@ -70,8 +70,9 @@
     cmd: gpg --verify /tmp/awscli.zip.sig /tmp/awscli.zip
   register: signature
 
-- name: debug the sig
-  ansible.builtin.debug: 
-    var: signature
+- name: extract and install aws
+  ansible.builtin.shell:
+    cmd: unzip /tmp/awscli.zip -d /tmp/aws; echo "OK"
+  when: '"Good signature" in signature.stderr'
 
     
