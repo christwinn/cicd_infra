@@ -9,7 +9,7 @@
      - name: download the public key!
        ansible.builtin.get_url:
          url: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
-       dest: /tmp/aws-install.html
+         dest: /tmp/aws-install.html
 
      - name: extracting the public key from their webpage :-( ugly
        ansible.builtin.shell:
