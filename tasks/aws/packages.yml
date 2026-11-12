@@ -1,0 +1,9 @@
+- name: install unzip
+  ansible.builtin.dnf:
+    name: unzip
+    state: latest
+
+- name: install gpg so we can verify the signature
+  ansible.builtin.dnf:
+    name: gpg
+    state: latest
