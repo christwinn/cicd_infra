@@ -1,8 +1,7 @@
-- name: install Terraform
-  ansible.builtin.dnf:
-    name: terraform
-    state: latest
-
+ - name: add github repo
+   ansible.builtin.shell:
+     cmd: dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
+        
 - name: install gh cli
   ansible.builtin.dnf:
     name: gh
