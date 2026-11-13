@@ -2,7 +2,7 @@
 - name: gather facts
   ansible.builtin.setup:
     gather_subset: all
-    
+
 # https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?view=azure-cli-latest&pivots=dnf
 - name: Install Azure CLI 
   block: 
@@ -10,9 +10,15 @@
       ansible.builtin.shell: 
         cmd: rpm --import https://packages.microsoft.com/keys/microsoft-2025.asc
 
-    - name: install azure-cli
+    - name: add repo
       ansible.builtin.shell: 
         cmd: dnf install -y https://packages.microsoft.com/config/rhel/10/packages-microsoft-prod.rpm
+
+    - name: install az cli
+      ansible.builtin.dnf:
+        name: azure-cli 
+        state: present
+        
   when: ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "10"
 
 - name: Not suppoerted OS 
