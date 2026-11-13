@@ -1,10 +1,10 @@
 # download aws
-- name: check to see of zip already exists
+- name: check to see if zip file already exists
   ansible.builtin.stat:
     path: /tmp/awscli.zip
   register: zipfile
 
-- name: check to see of zip already exists
+- name: check to see if signature of zip already exists
   ansible.builtin.stat:
     path: /tmp/awscli.zip.sig
   register: sigfile
