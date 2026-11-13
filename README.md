@@ -3,6 +3,7 @@
 ## Build the infrastructure 
 
 1. Use controller-install.yml to configure our controller on a minimal installation 
+2. Our controller is our development test bed. 
 2. Write the terraform. awscli was installed to hunt down ami for usage
 3. Deploy vm's and containers, 
    - We are going lightweight, minimal (zero) cost
