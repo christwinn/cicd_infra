@@ -1,4 +1,8 @@
 ---
+- name: gather facts
+  ansible.builtin.setup:
+    gather_subset: all
+    
 # https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?view=azure-cli-latest&pivots=dnf
 - name: Install Azure CLI 
   block: 
