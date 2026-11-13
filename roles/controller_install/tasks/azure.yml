@@ -1,0 +1,19 @@
+---
+# https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?view=azure-cli-latest&pivots=dnf
+- name: Install Azure CLI 
+  block: 
+    - name: import MS repo key
+      ansible.builtin.shell: 
+        cmd: rpm --import https://packages.microsoft.com/keys/microsoft-2025.asc
+
+    - name: install azure-cli
+      ansible.builtin.shell: 
+        cmd: dnf install -y https://packages.microsoft.com/config/rhel/10/packages-microsoft-prod.rpm
+  when: ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] == "10"
+
+- name: Not suppoerted OS 
+  debug: 
+    msg: "Refer to: 
+          https://learn.microsoft.com/en-us/cli/azure/install-azure-cli-linux?view=azure-cli-latest&pivots=dnf
+          We are setting a dev machine with RHEL 10"
+  when: ansible_facts['distribution'] != "RedHat" or ansible_facts['distribution_major_version'] != "10"

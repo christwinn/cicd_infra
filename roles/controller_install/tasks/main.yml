@@ -1,5 +1,4 @@
 ---
-    
 - name: Include Terraform Tasks
   ansible.builtin.import_tasks:
     file: terraform.yml
@@ -11,3 +10,7 @@
 - name: Include awscli Tasks
   ansible.builtin.import_tasks:
     file: awscli.yml
+
+- name: Include azure Tasks
+  ansible.builtin.import_tasks:
+    file: azure.yml
